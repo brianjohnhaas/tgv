@@ -32,7 +32,7 @@ use crate::{
 };
 
 use gv_core::{error::TGVError, repository::Repository, state::State};
-use ratatui::{buffer::Buffer, layout::Rect};
+use ratatui::{buffer::Buffer, layout::Rect, style::Style};
 
 /// Render all areas in the layout
 pub fn render_main(
@@ -48,6 +48,8 @@ pub fn render_main(
         if rect.y >= buf.area.height || rect.x >= buf.area.width {
             continue;
         }
+
+        clear_area(buf, rect, pallete);
 
         match area_type {
             AreaType::Cytoband => render_cytobands(rect, buf, state, alignment_view, pallete)?,
@@ -83,6 +85,14 @@ pub fn render_main(
         };
     }
     Ok(())
+}
+
+fn clear_area(buf: &mut Buffer, area: &Rect, palette: &Palette) {
+    let style = Style::default().bg(palette.background);
+
+    for y in area.y..area.bottom() {
+        buf.set_string(area.x, y, " ".repeat(area.width as usize), style);
+    }
 }
 
 pub fn get_abbreviated_length_string(length: u64) -> String {

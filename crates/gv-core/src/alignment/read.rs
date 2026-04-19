@@ -166,13 +166,20 @@ impl AlignedRead {
         // AS = 0
         // Hidden tags: MDLocation = chr20:78,249
         // Base = C @ QV 30
+        let read_name = self
+            .read
+            .name()
+            .map(|name| String::from_utf8_lossy(name.as_ref()).into_owned())
+            .unwrap_or_else(|| "<unnamed>".to_string());
+        let mapping_quality = self
+            .read
+            .mapping_quality()
+            .map(|mapq| mapq.get().to_string())
+            .unwrap_or_else(|| "?".to_string());
+
         Ok(format!(
             "{}  Flags={:?}  Start={}  MAPQ={}  Cigar={:?}", // TODO
-            self.read.name().unwrap(),
-            self.flags,
-            self.start,
-            self.read.mapping_quality().unwrap().get(),
-            self.cigar
+            read_name, self.flags, self.start, mapping_quality, self.cigar
         ))
     }
 

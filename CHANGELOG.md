@@ -1,5 +1,16 @@
 # Changelog
 
+## unreleased
+
+- Improve BED track loading and rendering for local custom references.
+- Support compressed `.bed.gz` and `.bed.bgz` BED inputs.
+- Render BED intervals with visible glyphs instead of subtle background-only shading.
+- Render BED12 exon blocks with `█` and intronic spans with `-`.
+- Show BED features on multiple rows instead of collapsing them into a single line.
+- Size the BED track dynamically based on the visible region while preserving alignment space.
+- Add a `BED` label and a `+N` overflow indicator to the BED track.
+- Add `CODEX.md` with a project overview, build and run instructions, and onboarding notes.
+
 ## 0.0.6
 
 - Cache support

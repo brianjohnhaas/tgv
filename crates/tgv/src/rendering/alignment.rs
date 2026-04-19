@@ -8,7 +8,7 @@ use gv_core::{
     message::AlignmentDisplayOption,
     state::State,
 };
-use ratatui::{buffer::Buffer, layout::Rect, style::Style};
+use ratatui::{buffer::Buffer, layout::Rect, style::{Modifier, Style}};
 
 /// Render an alignment on the alignment area.
 pub fn render_alignment(
@@ -160,10 +160,11 @@ fn get_read_rendering_info(
         RenderingContextKind::PairGap => output.push(OnScreenRenderingContext {
             x: onscreen_x,
             y: onscreen_y,
-            string: "-".repeat(length as usize),
+            string: "·".repeat(length as usize),
             style: Style::new()
                 .bg(pallete.background)
-                .fg(pallete.PAIRGAP_COLOR),
+                .fg(pallete.PAIRGAP_COLOR)
+                .add_modifier(Modifier::DIM),
         }),
 
         RenderingContextKind::PairOverlap => output.push(OnScreenRenderingContext {

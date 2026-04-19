@@ -139,48 +139,48 @@ impl Palette {
 }
 
 pub const DARK_THEME: Palette = Palette {
-    // FIXME: use standard ATCG colors, same as IGV
-    background: Color::from_u32(0x1e1e1e),
+    // Approximate an IGV-style palette while staying legible on black terminals.
+    background: Color::from_u32(0x000000),
     //background_2: Color::from_u32(0x323232),
 
     // Alignment
-    MATCH_COLOR: tailwind::GRAY.c500,
-    MATCH_FG_COLOR: tailwind::WHITE,
+    MATCH_COLOR: tailwind::GRAY.c400,
+    MATCH_FG_COLOR: tailwind::GRAY.c950,
     MISMATCH_COLOR: Color::Rgb(251, 198, 207),
-    DELETION_COLOR: Color::Red,
-    PAIRGAP_COLOR: Color::LightRed,
-    PAIR_OVERLAP_COLOR: tailwind::GRAY.c900,
-    REFSKIP_COLOR: Color::Red,
-    INSERTION_COLOR: Color::Magenta,
+    DELETION_COLOR: tailwind::RED.c400,
+    PAIRGAP_COLOR: tailwind::GRAY.c500,
+    PAIR_OVERLAP_COLOR: tailwind::GRAY.c700,
+    REFSKIP_COLOR: tailwind::RED.c400,
+    INSERTION_COLOR: tailwind::FUCHSIA.c400,
 
-    SOFTCLIP_A: Color::LightRed,
-    SOFTCLIP_C: Color::LightGreen,
-    SOFTCLIP_G: Color::LightBlue,
-    SOFTCLIP_T: Color::LightYellow,
-    SOFTCLIP_N: Color::LightMagenta,
+    SOFTCLIP_A: Color::from_u32(0x1fb34a),
+    SOFTCLIP_C: Color::from_u32(0x3b82f6),
+    SOFTCLIP_G: Color::from_u32(0xf59e0b),
+    SOFTCLIP_T: Color::from_u32(0xef4444),
+    SOFTCLIP_N: tailwind::GRAY.c400,
 
-    MISMATCH_A: Color::LightRed,
-    MISMATCH_C: Color::LightGreen,
-    MISMATCH_G: Color::LightBlue,
-    MISMATCH_T: Color::LightYellow,
-    MISMATCH_N: Color::LightMagenta,
+    MISMATCH_A: Color::from_u32(0x1fb34a),
+    MISMATCH_C: Color::from_u32(0x3b82f6),
+    MISMATCH_G: Color::from_u32(0xf59e0b),
+    MISMATCH_T: Color::from_u32(0xef4444),
+    MISMATCH_N: tailwind::GRAY.c400,
 
-    COVERAGE_ALT: Color::Red,
-    COVERAGE_A: Color::LightRed,
-    COVERAGE_T: Color::LightYellow,
-    COVERAGE_C: Color::LightGreen,
-    COVERAGE_G: Color::LightBlue,
-    COVERAGE_N: Color::LightMagenta,
-    COVERAGE_TOTAL: Color::Gray,
+    COVERAGE_ALT: tailwind::RED.c400,
+    COVERAGE_A: Color::from_u32(0x1fb34a),
+    COVERAGE_T: Color::from_u32(0xef4444),
+    COVERAGE_C: Color::from_u32(0x3b82f6),
+    COVERAGE_G: Color::from_u32(0xf59e0b),
+    COVERAGE_N: tailwind::GRAY.c400,
+    COVERAGE_TOTAL: tailwind::GRAY.c200,
     COVERAGE_SOFTCLIP: Color::Cyan, // TODO
 
     // Cytoband
-    HIGHLIGHT_COLOR: tailwind::RED.c800,
+    HIGHLIGHT_COLOR: tailwind::RED.c500,
     //  GNEG_COLOR: Color = tailwind::GREEN.c100;
-    GPOS25_COLOR: tailwind::GREEN.c200,
+    GPOS25_COLOR: tailwind::GREEN.c300,
     GPOS50_COLOR: tailwind::GREEN.c500,
-    GPOS75_COLOR: tailwind::GREEN.c700,
-    GPOS100_COLOR: tailwind::GREEN.c900,
+    GPOS75_COLOR: tailwind::GREEN.c600,
+    GPOS100_COLOR: tailwind::GREEN.c800,
 
     ACEN_COLOR: tailwind::RED.c300,
     GVAR_COLOR: tailwind::GRAY.c300,
@@ -188,23 +188,23 @@ pub const DARK_THEME: Palette = Palette {
     OTHER_COLOR: tailwind::GRAY.c300,
 
     // Sequence
-    SEQUENCE_FOREGROUND_COLOR: tailwind::GRAY.c900,
-    BASE_A: tailwind::RED.c300,
-    BASE_C: tailwind::GREEN.c300,
-    BASE_G: tailwind::BLUE.c300,
-    BASE_T: tailwind::YELLOW.c300,
-    BASE_N: tailwind::GRAY.c300,
+    SEQUENCE_FOREGROUND_COLOR: tailwind::GRAY.c950,
+    BASE_A: tailwind::RED.c400,
+    BASE_C: tailwind::GREEN.c400,
+    BASE_G: tailwind::BLUE.c400,
+    BASE_T: tailwind::YELLOW.c400,
+    BASE_N: tailwind::GRAY.c400,
 
     // Intervals
-    VCF1: tailwind::VIOLET.c900,
-    VCF2: tailwind::VIOLET.c400,
-    BED1: tailwind::INDIGO.c900,
-    BED2: tailwind::INDIGO.c400,
+    VCF1: tailwind::VIOLET.c500,
+    VCF2: tailwind::VIOLET.c300,
+    BED1: tailwind::SKY.c400,
+    BED2: tailwind::CYAN.c300,
 
     // Gene track
-    EXON_BACKGROUND_COLOR: tailwind::BLUE.c800,
+    EXON_BACKGROUND_COLOR: tailwind::BLUE.c600,
     EXON_FOREGROUND_COLOR: tailwind::WHITE,
-    GENE_BACKGROUND_COLOR: tailwind::BLUE.c600,
-    NON_CDS_EXON_BACKGROUND_COLOR: tailwind::BLUE.c500,
-    INTRON_FOREGROUND_COLOR: tailwind::BLUE.c300,
+    GENE_BACKGROUND_COLOR: tailwind::BLUE.c400,
+    NON_CDS_EXON_BACKGROUND_COLOR: tailwind::BLUE.c300,
+    INTRON_FOREGROUND_COLOR: tailwind::BLUE.c200,
 };
