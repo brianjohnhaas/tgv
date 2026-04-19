@@ -92,6 +92,10 @@ impl App {
                 .draw(|frame| {
                     let buffer = frame.buffer_mut();
                     refresh_terminal = self.layout.set_area(buffer.area);
+                    refresh_terminal |= self
+                        .layout
+                        .sync_bed_height(&self.state, &self.alignment_view)
+                        .unwrap_or(false);
                     self.render(buffer).unwrap()
                 })
                 .unwrap();

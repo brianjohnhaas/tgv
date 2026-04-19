@@ -3,6 +3,7 @@ use gv_core::{
     alignment::Alignment,
     error::TGVError,
     intervals::{Focus, GenomeInterval, Region},
+    state::State,
     message::{Scroll, Zoom},
 };
 use ratatui::layout::{Constraint, Direction, Layout, Rect};
@@ -126,6 +127,27 @@ impl LayoutNode {
         }
     }
 
+    fn update_area_length(&mut self, target: AreaType, new_length: u16) -> bool {
+        match self {
+            LayoutNode::Split { children, .. } => children
+                .iter_mut()
+                .any(|child| child.update_area_length(target, new_length)),
+            LayoutNode::Area {
+                constraint,
+                area_type,
+            } if *area_type == target => {
+                let new_constraint = Constraint::Length(new_length);
+                if *constraint != new_constraint {
+                    *constraint = new_constraint;
+                    true
+                } else {
+                    false
+                }
+            }
+            _ => false,
+        }
+    }
+
     pub fn root(settings: &Settings) -> Self {
         let mut children = vec![];
         if settings.core.reference.needs_track() {
@@ -157,7 +179,7 @@ impl LayoutNode {
 
         if settings.core.bed_path.is_some() {
             children.push(LayoutNode::Area {
-                constraint: Constraint::Length(1),
+                constraint: Constraint::Length(4),
                 area_type: AreaType::Bed,
             });
         }
@@ -453,11 +475,85 @@ impl MainLayout {
         }
     }
 
+    pub fn sync_bed_height(
+        &mut self,
+        state: &State,
+        alignment_view: &AlignmentView,
+    ) -> Result<bool, TGVError> {
+        let Some(bed_area) = self.area_rect(AreaType::Bed) else {
+            return Ok(false);
+        };
+
+        let desired_height = self
+            .required_bed_rows(state, alignment_view)?
+            .min(self.max_bed_height())
+            .max(1);
+
+        if self.root.update_area_length(AreaType::Bed, desired_height) {
+            self.areas = self.root.get_areas(self.main_area);
+            Ok(true)
+        } else {
+            let _ = bed_area;
+            Ok(false)
+        }
+    }
+
+    fn required_bed_rows(
+        &self,
+        state: &State,
+        alignment_view: &AlignmentView,
+    ) -> Result<u16, TGVError> {
+        let region = alignment_view.region(&self.main_area);
+        let intervals =
+            state
+                .bed_intervals
+                .overlapping(region.contig_index(), region.start(), region.end())?;
+
+        Ok(required_interval_rows(intervals) as u16)
+    }
+
+    fn max_bed_height(&self) -> u16 {
+        const MIN_ALIGNMENT_HEIGHT: u16 = 3;
+
+        let current_bed_height = self.area_rect(AreaType::Bed).map(|rect| rect.height).unwrap_or(0);
+        let current_alignment_height = self
+            .area_rect(AreaType::Alignment)
+            .map(|rect| rect.height)
+            .unwrap_or(0);
+
+        current_bed_height + current_alignment_height.saturating_sub(MIN_ALIGNMENT_HEIGHT)
+    }
+
+    fn area_rect(&self, target: AreaType) -> Option<Rect> {
+        self.areas
+            .iter()
+            .find_map(|(area_type, rect)| (*area_type == target).then_some(*rect))
+    }
+
     pub fn get_area_type_at_position(&self, x: u16, y: u16) -> Option<&(AreaType, Rect)> {
         self.areas.iter().find(|(area_type, area)| {
             x >= area.x && x < area.right() && y >= area.y && y < area.bottom()
         })
     }
+}
+
+fn required_interval_rows<T: GenomeInterval>(mut intervals: Vec<&T>) -> usize {
+    intervals.sort_by_key(|interval| (interval.start(), interval.end()));
+
+    let mut row_right_edges: Vec<u64> = Vec::new();
+
+    for interval in intervals {
+        if let Some(right_edge) = row_right_edges
+            .iter_mut()
+            .find(|right_edge| interval.start() > **right_edge)
+        {
+            *right_edge = interval.end();
+        } else {
+            row_right_edges.push(interval.end());
+        }
+    }
+
+    row_right_edges.len()
 }
 
 pub fn resize_node(
